@@ -36,6 +36,7 @@ logger.info(before + f"PWD=<{len(after)} characters>")
 
 logger.info("Iniciando la realizacion de la conexion")
 conn_sql = pyodbc.connect(CONNECTION_STRING,autocommit=True)
+
 logger.info("Conexion SQL realizada con exito")
 
 #Configurar nuestra conexion a MySQL
@@ -68,7 +69,7 @@ def menu():
             while consultas.is_alive:
                 animate("Ejecutando consultas")
         else:
-            conn.close()
+            conn_sql.close()
             logger.info('Conexion finalizada')
             exit()
 
