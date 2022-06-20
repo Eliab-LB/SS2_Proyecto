@@ -193,7 +193,7 @@ def llenar_cancion():
 
 def creacion():
     logger.info("Eliminando tablas...")
-    cursor = conn.cursor()
+    cursor = conn_sql.cursor()
     cursor.execute(DROP_TABLES)
     logger.info("Tablas eliminadas correctamente")
     logger.info("Creando las tablas necesarias")
