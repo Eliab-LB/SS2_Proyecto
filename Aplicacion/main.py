@@ -8,7 +8,6 @@ import time
 import sys
 
 from imprimir import *
-from creacion import *
 from tabulate import tabulate
 from mysql.statements import * 
 from sqlserver.statements import * 
