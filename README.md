@@ -19,3 +19,17 @@ Despues de descargar el proyecto e instalar python ejecutar:
 ```bash
 pip3 install -r requirements.txt
 ```
+Para ejecutar la aplicacion, entrar a la carpeta "Aplicacion" 
+```bash
+cd Aplicacion
+```
+Y ejecutar con python3: 
+```bash
+python3 main.py
+```
+
+Los logs se generan en: 
+`Aplicacion/logs.log` 
+
+Las credenciales estan almacenadas en: 
+`Aplicacion/config.py`
