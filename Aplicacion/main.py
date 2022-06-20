@@ -2,14 +2,15 @@
 #Las librerias necesarias
 # import pyodbc
 import itertools
-import threading
 import pymysql
+import pyodbc
+import threading
+# import mysql.connector
 import pandas as pd
 import time
 import sys
 
 
-from pymysql.constants import CLIENT 
 from imprimir import *
 from creacion import *
 from tabulate import tabulate
@@ -25,9 +26,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-#Configurar nuestra conexion
-
-CONNECTION_STRING = f"SERVER={config.server};UID={config.sql_user};PWD={config.sql_password};DATABASE={config.database}"
+#Configurar nuestra conexion a SQL Server
+CONNECTION_STRING = f"DRIVER={{{config.sql_driver}}};SERVER={config.sql_server};UID={config.sql_user};PWD={config.sql_password};DATABASE={config.sql_database}"
 
 logger.info("Iniciando nuestra aplicacion")
 
@@ -36,9 +36,13 @@ before, after = CONNECTION_STRING.split("PWD=")
 logger.info(before + f"PWD=<{len(after)} characters>")
 
 logger.info("Iniciando la realizacion de la conexion")
-conn = pymysql.connect(host=config.server,user=config.sql_user,passwd=config.sql_password,db=config.database,client_flag=CLIENT.MULTI_STATEMENTS)
-logger.info("Conexion realizada con exito")
-done=False
+conn_sql = pyodbc.connect(CONNECTION_STRING,autocommit=True)
+
+logger.info("Conexion SQL realizada con exito")
+
+#Configurar nuestra conexion a MySQL
+conn_mysql = pymysql.connect(host=config.server,user=config.sql_user,passwd=config.sql_password,db=config.database,client_flag=CLIENT.MULTI_STATEMENTS)
+logger.info("Conexion MySQL realizada con exito")
 
 def main():
     menu()
@@ -66,7 +70,7 @@ def menu():
             while consultas.is_alive:
                 animate("Ejecutando consultas")
         else:
-            conn.close()
+            conn_sql.close()
             logger.info('Conexion finalizada')
             exit()
 
@@ -190,7 +194,7 @@ def llenar_cancion():
 
 def creacion():
     logger.info("Eliminando tablas...")
-    cursor = conn.cursor()
+    cursor = conn_sql.cursor()
     cursor.execute(DROP_TABLES)
     logger.info("Tablas eliminadas correctamente")
     logger.info("Creando las tablas necesarias")

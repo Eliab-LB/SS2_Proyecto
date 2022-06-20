@@ -1,5 +1,0 @@
-driver = 'ODBC Driver 17 for SQL Server'
-server = '159.223.192.226'
-sql_user = 'sa'
-sql_password = 'Seminario2#'
-database='Proyecto1'

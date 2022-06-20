@@ -1,0 +1,9 @@
+
+2022-06-19 18:42:02,388 - Seminario_2_Proyecto_Grupo_E - INFO - Iniciando nuestra aplicacion
+2022-06-19 18:42:02,388 - Seminario_2_Proyecto_Grupo_E - INFO - ------------------------------ CONNECTION_STRING: ------------------------------
+2022-06-19 18:42:02,388 - Seminario_2_Proyecto_Grupo_E - INFO - DRIVER={ODBC Driver 17 for SQL Server};SERVER=159.223.192.226;UID=sa;PWD=<30 characters>
+2022-06-19 18:42:02,388 - Seminario_2_Proyecto_Grupo_E - INFO - Iniciando la realizacion de la conexion
+2022-06-19 18:42:28,500 - Seminario_2_Proyecto_Grupo_E - INFO - Iniciando nuestra aplicacion
+2022-06-19 18:42:28,500 - Seminario_2_Proyecto_Grupo_E - INFO - ------------------------------ CONNECTION_STRING: ------------------------------
+2022-06-19 18:42:28,500 - Seminario_2_Proyecto_Grupo_E - INFO - DRIVER={ODBC Driver 17 for SQL Server};SERVER=159.223.192.226;UID=sa;PWD=<30 characters>
+2022-06-19 18:42:28,500 - Seminario_2_Proyecto_Grupo_E - INFO - Iniciando la realizacion de la conexion
