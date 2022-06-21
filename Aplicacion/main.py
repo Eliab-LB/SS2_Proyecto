@@ -6,7 +6,8 @@ import threading
 import pandas as pd
 import time
 import sys
-
+import os 
+from path_config.definitions import ROOT_DIR
 from imprimir import *
 from tabulate import tabulate
 from mysql.statements import * 
@@ -90,31 +91,46 @@ def creacion():
     SQL.delete_temporal_table()
     logger.info("Tablas eliminadas correctamente")
     logger.info("Creando las tablas necesarias")
-    logger.info("Creando tabla temporal")
+    logger.info("Creando tabla temporal PIB_PERCAPITA (crecimiento anual) ")
     MYSQL.build_temporal_table()
     SQL.build_temporal_table()
     logger.info("Comenzando a procesar el dataset")
     try:
-        print('leyendo csv')
-        data = pd.read_csv("PIB_PERCAPITA.csv")
+        iso_country_code=pd.read_csv(os.path.join(ROOT_DIR,'dataset','ISO-3166Countries-with-Regional-Codes.csv'))
+
+
+        data = pd.read_csv(os.path.join(ROOT_DIR,'dataset','PIB_PERCAPITA.csv'))
         # print(data)
         df = pd.DataFrame(data)
         df = df.fillna(0)
-        logger.info("Dataset leido exitosamente")
-        queries_to_run = transform_data(df)
+        logger.info("Dataset leido exitosamente (crecimiento pib)")
+        queries_to_run = transform_data(df, table_name="temporal")
         logger.info("Cargando tabla temporal pib - mysql")
         MYSQL.load_temporal_pib(queries_to_run)
         logger.info("Cargando tabla temporal pib - SQL_Server")
         SQL.load_temporal_pib(queries_to_run)
+        
+
+        data_inflacion=pd.read_csv(os.path.join(ROOT_DIR,'dataset','PIB_Inflacion.csv'))
+        df_inflacion = pd.DataFrame(data_inflacion)
+        df_inflacion = df_inflacion.fillna(0)
+        logger.info("Dataset leido exitosamente (inflación)")
+        queries_to_run_inflacion=transform_data(df_inflacion, table_name="temporal_inflacion")
+        logger.info('Cargando tabla temporal inflacion - mysql')
+        MYSQL.load_temporal_pib(queries_to_run_inflacion)
+        logger.info("Cargando tabla temporal inflacion - SQL_Server")
+        SQL.load_temporal_pib(queries_to_run_inflacion)
         logger.info("Tablas temporales cargadas a bases de datos")
         done=True
+
     except Exception as e:
         logger.error(e)
         conn.close()
         done=True
         exit()
 
-def transform_data(df):
+    
+def transform_data(df,table_name):
     to_run = list()
     i = 0
     for row in df.itertuples():
@@ -125,21 +141,18 @@ def transform_data(df):
         country_code = ('NA' if row[4] == 0 else row[4])
         country_name = country_name.replace("'","''")
         if(country_name == 'NA' and country_code == 'NA'):
-            print('row 0 = vacio')
+            print('fin del archivo')
             break
         years={}
 
         for x in range(5,28):
             years[x] = (0 if row[x] == '..'else round(float(row[x]),4))
 
-        query = (f'INSERT INTO temporal VALUES(\'{country_name}\',\'{country_code}\',{years[5]},{years[6]},{years[7]},{years[8]},{years[9]},{years[10]},{years[11]},{years[12]},{years[13]},{years[14]},{years[15]},{years[16]},{years[17]},{years[18]},{years[19]},{years[20]},{years[21]},{years[22]},{years[23]},{years[24]},{years[25]},{years[26]},{years[27]})')
-        print('query:',query)
+        query = (f'INSERT INTO {table_name} VALUES(\'{row[1]}\',\'{country_name}\',\'{country_code}\',{years[5]},{years[6]},{years[7]},{years[8]},{years[9]},{years[10]},{years[11]},{years[12]},{years[13]},{years[14]},{years[15]},{years[16]},{years[17]},{years[18]},{years[19]},{years[20]},{years[21]},{years[22]},{years[23]},{years[24]},{years[25]},{years[26]},{years[27]})')
         to_run.append(query)
 
         logger.info(query)
-        # cursor.execute(query)
         i=i+1
-    # conn.commit()
     logger.info(f'Generados {i} inserts')
     return to_run
 
