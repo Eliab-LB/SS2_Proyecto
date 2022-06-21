@@ -97,7 +97,14 @@ def creacion():
     logger.info("Comenzando a procesar el dataset")
     try:
         iso_country_code=pd.read_csv(os.path.join(ROOT_DIR,'dataset','ISO-3166Countries-with-Regional-Codes.csv'))
-
+        df_iso=pd.DataFrame(iso_country_code)
+        df_iso=df_iso.fillna(0)
+        iso_queries_to_run=transform_data_iso(df_iso)
+        logger.info("Dataset ISO-3166 leido exitosamente")
+        logger.info("Cargando tabla temporal ISO-3166 - mysql")
+        MYSQL.load_temporal_data(iso_queries_to_run)
+        logger.info("Cargando tabla temporal ISO-3166 - SQL_Server")
+        SQL.load_temporal_data(iso_queries_to_run)
 
         data = pd.read_csv(os.path.join(ROOT_DIR,'dataset','PIB_PERCAPITA.csv'))
         # print(data)
@@ -106,9 +113,9 @@ def creacion():
         logger.info("Dataset leido exitosamente (crecimiento pib)")
         queries_to_run = transform_data(df, table_name="temporal")
         logger.info("Cargando tabla temporal pib - mysql")
-        MYSQL.load_temporal_pib(queries_to_run)
+        MYSQL.load_temporal_data(queries_to_run)
         logger.info("Cargando tabla temporal pib - SQL_Server")
-        SQL.load_temporal_pib(queries_to_run)
+        SQL.load_temporal_data(queries_to_run)
         
 
         data_inflacion=pd.read_csv(os.path.join(ROOT_DIR,'dataset','PIB_Inflacion.csv'))
@@ -117,9 +124,9 @@ def creacion():
         logger.info("Dataset leido exitosamente (inflación)")
         queries_to_run_inflacion=transform_data(df_inflacion, table_name="temporal_inflacion")
         logger.info('Cargando tabla temporal inflacion - mysql')
-        MYSQL.load_temporal_pib(queries_to_run_inflacion)
+        MYSQL.load_temporal_data(queries_to_run_inflacion)
         logger.info("Cargando tabla temporal inflacion - SQL_Server")
-        SQL.load_temporal_pib(queries_to_run_inflacion)
+        SQL.load_temporal_data(queries_to_run_inflacion)
         logger.info("Tablas temporales cargadas a bases de datos")
         done=True
 
@@ -129,7 +136,30 @@ def creacion():
         done=True
         exit()
 
-    
+def transform_data_iso(df):
+    to_run = list()
+    i = 0
+    for row in df.itertuples():
+        if(i==0):
+            i = i +1
+            continue
+        country_name=row[1]
+        country_name = country_name.replace("'","''")
+        alpha3=row[3]
+        country_code=(0 if row[4] == 0 else row[4])
+        # ('NA' if row[3] == 0 else row[3])
+        region=row[6]
+        sub_region=row[7]
+        region_code=(0 if row[9] == 0 else row[9])
+        sub_region_code=(0 if row[10] == 0 else row[10])
+        query = (f'INSERT INTO temporalISO3166 VALUES(\'{country_name}\',\'{alpha3}\',{country_code},\'{region}\',{region_code},\'{sub_region}\',{sub_region_code})')
+        to_run.append(query)
+
+        logger.info(query)
+        i=i+1
+    logger.info(f'Generados {i} inserts')
+    return to_run
+
 def transform_data(df,table_name):
     to_run = list()
     i = 0

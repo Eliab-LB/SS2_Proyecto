@@ -29,7 +29,7 @@ class StatementsSQL(object):
         # finally:
             # conn.close()
     
-    def load_temporal_pib(self,df):
+    def load_temporal_data(self,df):
         try:
             cursor = conn.cursor()
             for row in df:
