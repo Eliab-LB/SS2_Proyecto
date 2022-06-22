@@ -15,6 +15,7 @@ class StatementsMySQL(object):
             cursor = conn.cursor()
             cursor.execute(DROP_TABLES)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -25,6 +26,7 @@ class StatementsMySQL(object):
             cursor.execute(TEMPORAL_CREATION)
             cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -35,6 +37,7 @@ class StatementsMySQL(object):
             cursor.execute(CREATE_MODEL)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -46,6 +49,7 @@ class StatementsMySQL(object):
                 cursor.execute(row)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally: 
             # conn.close()
@@ -55,6 +59,7 @@ class StatementsMySQL(object):
             cursor.execute(REGION)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -64,6 +69,7 @@ class StatementsMySQL(object):
             cursor.execute(SUB_REGION)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -73,6 +79,7 @@ class StatementsMySQL(object):
             cursor.execute(FECHA)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -82,6 +89,7 @@ class StatementsMySQL(object):
             cursor.execute(DIMENSION)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -91,6 +99,7 @@ class StatementsMySQL(object):
             cursor.execute(PERIODICIDAD)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -100,6 +109,15 @@ class StatementsMySQL(object):
             cursor.execute(PAIS)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
+    def delete_model(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(CLEAN_MODEL)
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception

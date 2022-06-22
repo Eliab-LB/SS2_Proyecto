@@ -17,6 +17,7 @@ class StatementsSQL(object):
             cursor.execute(DROP_TABLES)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -28,6 +29,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -39,6 +41,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -50,6 +53,7 @@ class StatementsSQL(object):
                 cursor.execute(row)
             conn.commit()
         except Exception as e:
+            conn.close()
             raise e from Exception
 
     def fill_model_region(self):
@@ -59,6 +63,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -81,6 +86,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -92,6 +98,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -103,6 +110,7 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
@@ -114,6 +122,15 @@ class StatementsSQL(object):
             conn.commit()
             # cursor.execute(COLLATE)
         except Exception as e:
+            conn.close()
             raise e from Exception
         # finally:
             # conn.close()
+    def delete_model(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(CLEAN_MODEL)
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception

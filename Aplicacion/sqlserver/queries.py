@@ -144,3 +144,9 @@ PAIS=('INSERT INTO pais '
 'WHERE ti.region_code = r.id AND sr.id = ti.sub_region_code ORDER BY ti.country_name ASC; ')
 
 
+CLEAN_MODEL=('delete FROM region; '
+'delete from sub_region; '
+'delete from fecha; '
+'delete from dimension; '
+'delete from periodicidad; '
+'delete from pais; ')
