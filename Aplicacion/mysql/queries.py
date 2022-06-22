@@ -1,6 +1,13 @@
-DROP_TABLES=('DROP TABLE IF EXISTS temporal;'
-'DROP TABLE IF EXISTS temporal_inflacion;'
-'DROP TABLE IF EXISTS temporalISO3166')
+DROP_TABLES=('DROP TABLE IF EXISTS temporal; '
+'DROP TABLE IF EXISTS temporal_inflacion; '
+'DROP TABLE IF EXISTS temporalISO3166; '
+'DROP TABLE IF EXISTS reporte; '
+'DROP TABLE IF EXISTS pais; '
+'DROP TABLE IF EXISTS dimension; '
+'DROP TABLE IF EXISTS fecha; '
+'DROP TABLE IF EXISTS region; '
+'DROP TABLE IF EXISTS periodicidad; '
+'DROP TABLE IF EXISTS sub_region; ')
 
 TEMPORAL_CREATION=(
     'CREATE TABLE temporalISO3166('
@@ -66,7 +73,109 @@ TEMPORAL_CREATION=(
     '`2020` FLOAT, '
     '`2021` FLOAT);')
 
-
-
 COLLATE=('ALTER TABLE temporal CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 'ALTER TABLE temporal_inflacion CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;')
+
+CREATE_MODEL=(
+' CREATE TABLE `dimension` ('
+    '`id` int(11) NOT NULL, '
+    '`descripcion` varchar(200) NOT NULL '
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; '
+'CREATE TABLE `fecha` ('
+  '`id` int(11) NOT NULL,'
+  '`anio` int(11) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'CREATE TABLE `pais` ('
+  '`id` int(11) NOT NULL,'
+  '`id_region` int(11) NOT NULL,'
+  '`id_sub_region` int(11) NOT NULL,'
+  '`nombre` varchar(200) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'CREATE TABLE `periodicidad` ('
+  '`id` int(11) NOT NULL,'
+  '`descripcion` varchar(250) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'CREATE TABLE `region` ('
+  '`id` int(11) NOT NULL,'
+  '`nombre` varchar(250) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'CREATE TABLE `reporte` ('
+  '`id` int(11) NOT NULL,'
+  '`inflacion` float NOT NULL,'
+  '`PIB` float NOT NULL,'
+  '`id_pais` int(11) NOT NULL,'
+  '`id_periodicidad` int(11) NOT NULL,'
+  '`id_dimension` int(11) NOT NULL,'
+  '`id_fecha` int(11) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'CREATE TABLE `sub_region` ('
+  '`id` int(11) NOT NULL,'
+  '`nombre` varchar(250) NOT NULL'
+') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'
+'ALTER TABLE `dimension`'
+  'ADD PRIMARY KEY (`id`);'
+  'ALTER TABLE `fecha`'
+  'ADD PRIMARY KEY (`id`);'
+  'ALTER TABLE `pais`'
+  'ADD PRIMARY KEY (`id`),'
+  'ADD UNIQUE KEY `id_region` (`id`,`id_region`,`id_sub_region`),'
+  'ADD KEY `id_sub_region` (`id_sub_region`);'
+  'ALTER TABLE `periodicidad`'
+  'ADD PRIMARY KEY (`id`);'
+  'ALTER TABLE `region`'
+  'ADD PRIMARY KEY (`id`);'
+'ALTER TABLE `reporte`'
+  'ADD PRIMARY KEY (`id`),'
+  'ADD UNIQUE KEY `id_pais` (`id_pais`,`id_periodicidad`,`id_dimension`,`id_fecha`),'
+  'ADD KEY `id_periodicidad` (`id_periodicidad`),'
+  'ADD KEY `id_fecha` (`id_fecha`),'
+  'ADD KEY `id_dimension` (`id_dimension`);'
+  'ALTER TABLE `sub_region`'
+  'ADD PRIMARY KEY (`id`);'
+  'ALTER TABLE `dimension`'
+  'MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;'
+  'ALTER TABLE `fecha`'
+  'MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;'
+  'ALTER TABLE `periodicidad`'
+  'MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;'
+  'ALTER TABLE `reporte`'
+  'MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;'
+  'ALTER TABLE `pais`'
+  'ADD CONSTRAINT `pais_ibfk_1` FOREIGN KEY (`id_sub_region`) REFERENCES `sub_region` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,'
+  'ADD CONSTRAINT `pais_ibfk_3` FOREIGN KEY (`id_region`) REFERENCES `region` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+  'ALTER TABLE `reporte`'
+  'ADD CONSTRAINT `reporte_ibfk_1` FOREIGN KEY (`id_periodicidad`) REFERENCES `periodicidad` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,'
+  'ADD CONSTRAINT `reporte_ibfk_2` FOREIGN KEY (`id_fecha`) REFERENCES `fecha` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,'
+  'ADD CONSTRAINT `reporte_ibfk_3` FOREIGN KEY (`id_dimension`) REFERENCES `dimension` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,'
+  'ADD CONSTRAINT `reporte_ibfk_4` FOREIGN KEY (`id_pais`) REFERENCES `pais` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;'
+)
+
+FILL_MODEL=(
+    'INSERT INTO region(id, nombre)'
+    'SELECT DISTINCT region_code, region  FROM temporalISO3166 WHERE region_code != 0 ORDER BY region  ASC;'
+)
+
+REGION=('INSERT INTO region(id, nombre)'
+'SELECT DISTINCT region_code, region  FROM temporalISO3166 WHERE region_code != 0 ORDER BY region  ASC;')
+
+SUB_REGION=('INSERT INTO sub_region (id, nombre)'
+'SELECT DISTINCT sub_region_code, sub_region  FROM temporalISO3166 WHERE region_code != 0 ORDER BY sub_region  ASC ;')
+
+FECHA=('INSERT INTO fecha (anio) '
+'SELECT COLUMN_NAME '
+'FROM INFORMATION_SCHEMA.COLUMNS '
+'WHERE TABLE_NAME = \'temporal_inflacion\' AND COLUMN_NAME REGEXP \'^[0-9]+$\' ORDER BY COLUMN_NAME ASC; ')
+
+DIMENSION=('INSERT INTO dimension (descripcion) VALUES (\'Porcentaje\');')
+
+PERIODICIDAD=('INSERT INTO periodicidad (descripcion) VALUES (\'Anual\');')
+PAIS=('INSERT INTO pais '
+'SELECT DISTINCT ti.country_code, r.id, sr.id, ti.country_name FROM temporalISO3166 ti, region r, sub_region sr '
+'WHERE ti.region_code = r.id AND sr.id = ti.sub_region_code ORDER BY ti.country_name ASC; ')
+
+CLEAN_MODEL=('delete from pais; '
+    'delete FROM region; '
+    'delete from sub_region; '
+    'delete from fecha; '
+    'delete from dimension; '
+    'delete from periodicidad; ')
