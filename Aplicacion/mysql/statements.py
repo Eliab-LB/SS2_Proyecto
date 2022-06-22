@@ -28,7 +28,17 @@ class StatementsMySQL(object):
             raise e from Exception
         # finally:
             # conn.close()
-    
+
+    def build_model(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(CREATE_MODEL)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+
     def load_temporal_data(self,df):
         try:
             cursor = conn.cursor()
@@ -38,4 +48,58 @@ class StatementsMySQL(object):
         except Exception as e:
             raise e from Exception
         # finally: 
+            # conn.close()
+    def fill_model_region(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(REGION)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+    def fill_model_sub_region(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(SUB_REGION)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+    def fill_model_fecha(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(FECHA)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+    def fill_model_dimension(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(DIMENSION)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+    def fill_model_periodicidad(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(PERIODICIDAD)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
+            # conn.close()
+    def fill_model_pais(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(PAIS)
+            conn.commit()
+        except Exception as e:
+            raise e from Exception
+        # finally:
             # conn.close()

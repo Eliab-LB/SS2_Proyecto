@@ -79,9 +79,44 @@ def animate(message):
         sys.stdout.write('\r'+ message + '...'+char+'\r')
         time.sleep(.1)
         sys.stdout.flush() 
+def llenar_MySQL():
+    MYSQL.fill_model_region()
+    logger.info("region - completado -  MySQL")
+    MYSQL.fill_model_sub_region()
+    logger.info("sub_region - completado - MySQL")
+    MYSQL.fill_model_fecha()
+    logger.info("fecha - completado - MySQL")
+    MYSQL.fill_model_dimension()
+    logger.info("dimension - completado - MySQL")
+    MYSQL.fill_model_periodicidad()
+    logger.info("periodicidad - completado - MySQL")
+    MYSQL.fill_model_pais()
+    logger.info("pais - completado - MySQL") 
+
+def llenar_SQL_server():
+    SQL.fill_model_region()
+    logger.info("region - completado -  SQLServer")
+    SQL.fill_model_sub_region()
+    logger.info("sub_region - completado - SQLServer")
+    SQL.fill_model_fecha()
+    logger.info("fecha - completado - SQLServer")
+    SQL.fill_model_dimension()
+    logger.info("dimension - completado - SQLServer")
+    SQL.fill_model_periodicidad()
+    logger.info("periodicidad - completado - SQLServer")
+    SQL.fill_model_pais()
+    logger.info("pais - completado - SQLServer") 
 
 def ejecutar_llenado():
-    print('a implementar')
+    # print('a implementar')
+    logger.info("Llenando modelo MySQL")
+    llenar_MySQL()
+    logger.info("MySQL - Completado")
+
+    # logger.info("Llenando modelo SQLServer")
+    # llenar_SQL_server()
+    # logger.info("SQLServer - Completado")
+
 def ejecutar_consultas():
     print('a implementar ')
 
@@ -90,10 +125,13 @@ def creacion():
     MYSQL.delete_temporal_table()
     SQL.delete_temporal_table()
     logger.info("Tablas eliminadas correctamente")
-    logger.info("Creando las tablas necesarias")
     logger.info("Creando tabla temporal PIB_PERCAPITA (crecimiento anual) ")
     MYSQL.build_temporal_table()
     SQL.build_temporal_table()
+    logger.info("Creando Modelo - MySQL ")
+    MYSQL.build_model()
+    logger.info("Creando Modelo - SQLServer ")
+    SQL.build_model()
     logger.info("Comenzando a procesar el dataset")
     try:
         iso_country_code=pd.read_csv(os.path.join(ROOT_DIR,'dataset','ISO-3166Countries-with-Regional-Codes.csv'))
