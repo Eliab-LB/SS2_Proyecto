@@ -112,6 +112,8 @@ def llenar_SQL_server():
     logger.info("periodicidad - completado - SQLServer")
     SQL.fill_model_pais()
     logger.info("pais - completado - SQLServer") 
+    SQL.fill_model_reporte()
+    logger.info("reporte - completado - SQLServer")
 
 def ejecutar_llenado():
     logger.info("Llenando modelo MySQL")
