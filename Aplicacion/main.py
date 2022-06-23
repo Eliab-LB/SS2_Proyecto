@@ -10,7 +10,7 @@ import os
 from path_config.definitions import ROOT_DIR
 from imprimir import *
 from tabulate import tabulate
-from mysql.statements import * 
+from mysql_semi2.statements import * 
 from sqlserver.statements import * 
 
 import config
