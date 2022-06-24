@@ -134,6 +134,7 @@ class StatementsSQL(object):
         except Exception as e:
             conn.close()
             raise e from Exception
+    
     def fill_model_reporte(self):
         try:
             cursor = conn.cursor()
@@ -152,6 +153,14 @@ class StatementsSQL(object):
                     conn.commit()
             #cursor.execute(CLEAN_MODEL)
             #conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception
+    def execute_query(self,query):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            return cursor
         except Exception as e:
             conn.close()
             raise e from Exception

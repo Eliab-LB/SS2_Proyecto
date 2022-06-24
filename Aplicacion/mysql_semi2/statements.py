@@ -121,3 +121,11 @@ class StatementsMySQL(object):
         except Exception as e:
             conn.close()
             raise e from Exception
+    def execute_query(self,query):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception
