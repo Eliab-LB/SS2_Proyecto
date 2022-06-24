@@ -63,17 +63,18 @@ def menu():
             while cargando_informacion.is_alive():
                 animate("cargando información")
         elif opcion=='3':
-            logger.info('Usuario selecciona opcion de ejecutar consultas')
-            consultas = threading.Thread(name='consultas', target=ejecutar_consultas)
-            consultas.start()
-            while consultas.is_alive:
-                animate("Ejecutando consultas")
+            # logger.info('Usuario selecciona opcion de ejecutar consultas')
+            # consultas = threading.Thread(name='consultas', target=ejecutar_consultas)
+            # consultas.start()
+            # while consultas.is_alive:
+            #     animate("Ejecutando consultas")
+            ejecutar_consultas()
         elif opcion=='9':
             logger.info('Limpiando modelo...')
-            consultas = threading.Thread(name='consultas', target=limpiar_modelo)
-            consultas.start()
-            while consultas.is_alive:
-                animate("Ejecutando consultas")
+            limpiar_modelo = threading.Thread(name='limpiar_modelo', target=limpiar_modelo)
+            limpiar_modelo.start()
+            while limpiar_modelo.is_alive:
+                animate("Limpiando modelo")
         else:
             conn.close()
             logger.info('Conexion finalizada')
@@ -124,8 +125,74 @@ def ejecutar_llenado():
     llenar_SQL_server()
     logger.info("SQLServer - Completado")
     logger.info("Información en modelado cargada con éxito!")
+
+
 def ejecutar_consultas():
-    print('a implementar ')
+    logger.info("Ejecutando consultas:")
+    f = open("consultas.txt","w")
+    f.close()
+    f = open("consultas.txt","a")
+    cursor = SQL.execute_query(PAISES_INFLACION_ANIO)
+    logger.info("Países con más inflación por año")
+    f.write('\nPaíses con más inflación por año\n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Año', 'Inflación']))
+    f.write('\n')
+
+    logger.info("Países con más alto PIB por año")
+    cursor = SQL.execute_query(PAIS_MAS_PIB_ANIO)
+    f.write('\nPaíses con PIB mas alto por año\n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Año', 'PIB']))
+    f.write('\n')
+
+    logger.info("Países con menor inflación por año")
+    cursor = SQL.execute_query(PAISES_MENOS_INFLACION_ANIO)
+    f.write('\nPaíses con menor inflación por año\n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Año', 'Inflación']))
+    f.write('\n')
+
+    logger.info("PIB por pais en los ultimos 3 años")
+    cursor = SQL.execute_query(PIB_POR_PAIS_3ANIOS)
+    f.write('\nPIB por pais en los ultimos 3 años\n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', '2020', '2019', '2018']))
+    f.write('\n')
+
+    logger.info("Inflación por pais en los ultimos 3 años")
+    cursor = SQL.execute_query(INFLACION_PAIS_3ANIO)
+    f.write('\nInflación por pais en los ultimos 3 años\n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', '2020', '2019', '2018']))
+    f.write('\n')
+
+    logger.info("Top 10 promedio inflacion por pais")
+    cursor = SQL.execute_query(TOP10_INFLACION)
+    f.write('\nTop 10 promedio inflacion por pais \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Promedio inflacion']))
+    f.write('\n')
+
+    logger.info("Top 10 promedio PIB por pais")
+    cursor = SQL.execute_query(TOP10_PIB)
+    f.write('\nTop 10 promedio PIB por pais \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Promedio PIB']))
+    f.write('\n')
+
+    logger.info("Top 5 Años con mas PIB")
+    cursor = SQL.execute_query(TOP10_PIB)
+    f.write('\nTop 5 Años con mas PIB \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Promedio PIB']))
+    f.write('\n')
+
+
+
+
+    f.close()
+
 def limpiar_modelo():
     logger.info("Eliminando información")
     MYSQL.delete_model()
