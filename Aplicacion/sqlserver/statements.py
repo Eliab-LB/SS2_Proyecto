@@ -138,7 +138,7 @@ class StatementsSQL(object):
         try:
             cursor = conn.cursor()
             REPORTE = """INSERT INTO reporte 
-                SELECT t.[{0}] as 'PIB',  ti.[{0}] as 'Inflacion', p.id as 'Codigo pais', '1' as 'Periodicidad', '1' as Dimension, '{1}' as 'Anio'  
+                SELECT ti.[{0}] as 'Inflacion',  t.[{0}] as 'PIB', p.id as 'Codigo pais', '1' as 'Periodicidad', '1' as Dimension, '{1}' as 'Anio'  
                 FROM temporal t, temporal_inflacion ti, pais p 
                 WHERE t.country_name = ti.country_name AND ti.country_name = p.nombre;"""
             for x in range(23):
