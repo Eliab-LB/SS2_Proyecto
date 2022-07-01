@@ -203,3 +203,28 @@ TOP5_ANIOS_PIB=('SELECT TOP 5 f.anio as \'Año\', AVG(r.PIB) as Promedio_PIB '
 'FROM reporte r, fecha f '
 'WHERE r.id_fecha = f.id '
 'GROUP BY f.anio ORDER BY Promedio_PIB DESC')
+
+TOP5_ANIOS_INFLACION=('SELECT TOP 5 f.anio as \'Año\', AVG(r.Inflacion) as Promedio_Inflacion '
+'FROM reporte r, fecha f '
+'WHERE r.id_fecha = f.id '
+'GROUP BY f.anio ORDER BY Promedio_Inflacion DESC')
+
+
+
+GUATE_COVID=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=320')
+
+SALVADOR_BITCOIN=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=222')
+
+CUBA=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=192')

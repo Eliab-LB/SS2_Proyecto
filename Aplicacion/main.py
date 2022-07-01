@@ -182,13 +182,39 @@ def ejecutar_consultas():
     f.write('\n')
 
     logger.info("Top 5 Años con mas PIB")
-    cursor = SQL.execute_query(TOP10_PIB)
+    cursor = SQL.execute_query(TOP5_ANIOS_PIB)
     f.write('\nTop 5 Años con mas PIB \n')
     f.write('\n')
     f.write(tabulate(cursor,headers=['Pais', 'Promedio PIB']))
     f.write('\n')
 
+    logger.info("Top 5 Años con mas Inflacion")
+    cursor = SQL.execute_query(TOP5_ANIOS_INFLACION)
+    f.write('\nTop 5 Años con mas Inflacion \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Pais', 'Promedio Inflacion']))
+    f.write('\n')
 
+    logger.info("PIB e Inflacion de Guatemala durante el covid")
+    cursor = SQL.execute_query(GUATE_COVID)
+    f.write('\nPIB e Inflacion de Guatemala durante el covid \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Año', 'PIB', 'Inflación'],tablefmt='grid'))
+    f.write('\n')
+
+    logger.info("PIB e Inflacion de El Salvador durante el covid e implementacion del bitcoin")
+    cursor = SQL.execute_query(SALVADOR_BITCOIN)
+    f.write('\nPIB e Inflacion de El Salvador durante el covid e implementacion del bitcoin \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Año', 'PIB', 'Inflación']))
+    f.write('\n')
+
+    logger.info("PIB e Inflacion de Cuba durante el covid")
+    cursor = SQL.execute_query(CUBA)
+    f.write('\nPIB e Inflacion de Cuba durante el covid \n')
+    f.write('\n')
+    f.write(tabulate(cursor,headers=['Año', 'PIB', 'Inflación']))
+    f.write('\n')
 
 
     f.close()
