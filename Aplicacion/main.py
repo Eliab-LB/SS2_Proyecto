@@ -69,6 +69,8 @@ def menu():
             exportar_datamarts()
         elif opcion=='9':
             limpiar_modelo()
+        elif opcion=='7':
+            SQL.fill_reporte2()
         else:
             conn.close()
             logger.info('Conexion finalizada')
@@ -124,7 +126,7 @@ def llenar_SQL_server():
     logger.info("periodicidad - completado - SQLServer")
     SQL.fill_model_pais()
     logger.info("pais - completado - SQLServer") 
-    SQL.fill_model_reporte()
+    SQL.fill_reporte()
     logger.info("reporte - completado - SQLServer")
     SQL.fill_data_marts()
     logger.info("Datamarts - Inflacion,Pib,Combinado - completado - SQLServer")
