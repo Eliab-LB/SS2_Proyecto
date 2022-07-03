@@ -6,7 +6,8 @@ import threading
 import pandas as pd
 import time
 import sys
-import os 
+import os
+import csv 
 from path_config.definitions import ROOT_DIR
 from imprimir import *
 from tabulate import tabulate
@@ -64,12 +65,31 @@ def menu():
                 animate("cargando información")
         elif opcion=='3':
             ejecutar_consultas()
+        elif opcion=='4':
+            exportar_datamarts()
         elif opcion=='9':
             limpiar_modelo()
         else:
             conn.close()
             logger.info('Conexion finalizada')
             exit()
+def exportar_datamarts():
+    combinado = SQL.execute_query("SELECT * FROM combinado")
+    exportar_csv(combinado,"combinado")
+    inflacion = SQL.execute_query("SELECT * from inflacion")
+    exportar_csv(inflacion,"inflacion")
+    pib=SQL.execute_query("SELECT * from crecimiento_mundial")
+    exportar_csv(pib,"crecimiento_mundial")
+
+def exportar_csv(cursor,nombre_archivo):
+    nombre_archivo=f'{nombre_archivo}.csv'
+    path=os.path.join(ROOT_DIR,'exportados',nombre_archivo)
+    with open(path, 'w') as f:
+        writer=csv.writer(f,quoting=csv.QUOTE_NONE)
+        writer.writerow(col[0] for col in cursor.description)
+        for row in cursor:
+            writer.writerow(row)
+    logger.info(f'Archivo generado en:{path}')
 
 def animate(message):
     chars = "/—\|" 
