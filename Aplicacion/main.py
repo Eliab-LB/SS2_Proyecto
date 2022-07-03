@@ -63,18 +63,9 @@ def menu():
             while cargando_informacion.is_alive():
                 animate("cargando información")
         elif opcion=='3':
-            # logger.info('Usuario selecciona opcion de ejecutar consultas')
-            # consultas = threading.Thread(name='consultas', target=ejecutar_consultas)
-            # consultas.start()
-            # while consultas.is_alive:
-            #     animate("Ejecutando consultas")
             ejecutar_consultas()
         elif opcion=='9':
-            logger.info('Limpiando modelo...')
-            limpiar_modelo = threading.Thread(name='limpiar_modelo', target=limpiar_modelo)
-            limpiar_modelo.start()
-            while limpiar_modelo.is_alive:
-                animate("Limpiando modelo")
+            limpiar_modelo()
         else:
             conn.close()
             logger.info('Conexion finalizada')
@@ -115,6 +106,9 @@ def llenar_SQL_server():
     logger.info("pais - completado - SQLServer") 
     SQL.fill_model_reporte()
     logger.info("reporte - completado - SQLServer")
+    SQL.fill_data_marts()
+    logger.info("Datamarts - Inflacion,Pib,Combinado - completado - SQLServer")
+
 
 def ejecutar_llenado():
     logger.info("Llenando modelo MySQL")
@@ -220,12 +214,19 @@ def ejecutar_consultas():
     f.close()
 
 def limpiar_modelo():
-    logger.info("Eliminando información")
-    MYSQL.delete_model()
-    logger.info("MySQL limpio")
-    SQL.delete_model()
-    logger.info("SQLServer limpio")
-    
+    try:
+        logger.info("Eliminando información")
+        MYSQL.delete_model()
+        logger.info("MySQL limpio")
+        SQL.delete_model()
+        logger.info("SQLServer limpio")
+        done=True
+    except Exception as e:
+        logger.error(e)
+        conn.close()
+        done=True
+        exit()
+
 def creacion():
     logger.info("Eliminando tablas...")
     MYSQL.delete_temporal_table()
