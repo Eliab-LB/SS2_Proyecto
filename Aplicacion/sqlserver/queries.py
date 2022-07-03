@@ -257,29 +257,39 @@ FILL_REPORTE=('insert into reporte '
 'inner join pais p on p.nombre=pib.country_name '
 'inner join fecha f on pib.anio =f.anio  and inf.anio=f.anio ')
 
+CLEAN_DATAMARTS=('DROP VIEW IF EXISTS inflacion;'
+'DROP VIEW IF EXISTS crecimiento_mundial;'
+'DROP VIEW IF EXISTS combinado;')
+
 DATAMART_PIB=('CREATE VIEW crecimiento_mundial '
 'AS '
-'select p.nombre as \'pais\', r.PIB, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+'select p.nombre as \'pais\', r.PIB, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio,sr.nombre as sub_region,re.nombre as region  '
 'from reporte r '
  'inner join pais p on r.id_pais = p.id '
  'inner join periodicidad p2 on r.id_periodicidad = p2.id '
  'inner join dimension d on r.id_dimension = d.id '
- 'inner join fecha f ON r.id_fecha = f.id ')
+ 'inner join fecha f ON r.id_fecha = f.id '
+ 'inner join region re on p.id_region = re.id '
+ 'inner join sub_region sr on p.id_sub_region = sr.id ')
 
 DATAMART_INFLACION=('CREATE VIEW inflacion '
 'AS '
-'select p.nombre as \'pais\', r.inflacion , p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+'select p.nombre as \'pais\', r.inflacion , p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio,sr.nombre as sub_region,re.nombre as region  '
 'from reporte r '
  'inner join pais p on r.id_pais = p.id '
  'inner join periodicidad p2 on r.id_periodicidad = p2.id '
  'inner join dimension d on r.id_dimension = d.id '
- 'inner join fecha f ON r.id_fecha = f.id ')
+ 'inner join fecha f ON r.id_fecha = f.id '
+ 'inner join region re on p.id_region = re.id '
+ 'inner join sub_region sr on p.id_sub_region = sr.id ')
 
 DATAMART_COMBINADO=(' CREATE VIEW combinado '
  'AS '
- 'select p.nombre as \'pais\', r.PIB, r.inflacion, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+ 'select p.nombre as \'pais\', r.PIB, r.inflacion, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio,sr.nombre as sub_region,re.nombre as region  '
  'from reporte r '
  'inner join pais p on r.id_pais = p.id '
  'inner join periodicidad p2 on r.id_periodicidad = p2.id '
  'inner join dimension d on r.id_dimension = d.id '
- 'inner join fecha f ON r.id_fecha = f.id ')
+ 'inner join fecha f ON r.id_fecha = f.id '
+ 'inner join region re on p.id_region = re.id '
+ 'inner join sub_region sr on p.id_sub_region = sr.id ')

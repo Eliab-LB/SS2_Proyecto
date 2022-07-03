@@ -67,6 +67,8 @@ def menu():
             ejecutar_consultas()
         elif opcion=='4':
             exportar_datamarts()
+        elif opcion=='5':
+            recargar_datamarts()
         elif opcion=='9':
             limpiar_modelo()
         elif opcion=='7':
@@ -75,6 +77,18 @@ def menu():
             conn.close()
             logger.info('Conexion finalizada')
             exit()
+
+def recargar_datamarts():
+    try:
+        logger.info("Re cargando información (datamarts)")
+        SQL.execute_query(CLEAN_DATAMARTS)
+        SQL.fill_data_marts()
+        done=True
+    except Exception as e:
+        logger.error(e)
+        conn.close()
+        done=True
+        exit()
 def exportar_datamarts():
     combinado = SQL.execute_query("SELECT * FROM combinado")
     exportar_csv(combinado,"combinado")
