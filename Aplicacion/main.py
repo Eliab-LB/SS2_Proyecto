@@ -96,6 +96,8 @@ def exportar_datamarts():
     exportar_csv(inflacion,"inflacion")
     pib=SQL.execute_query("SELECT * from crecimiento_mundial")
     exportar_csv(pib,"crecimiento_mundial")
+    datawarehouse = SQL.execute_query("SELECT * from reporte")
+    exportar_csv(datawarehouse,"datawarehouse") 
 
 def exportar_csv(cursor,nombre_archivo):
     nombre_archivo=f'{nombre_archivo}.csv'
