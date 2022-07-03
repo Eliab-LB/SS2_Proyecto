@@ -135,6 +135,17 @@ class StatementsSQL(object):
             conn.close()
             raise e from Exception
     
+    def fill_data_marts(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(DATAMART_PIB)
+            cursor.execute(DATAMART_COMBINADO)
+            cursor.execute(DATAMART_INFLACION)
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception
+
     def fill_model_reporte(self):
         try:
             cursor = conn.cursor()
@@ -142,6 +153,7 @@ class StatementsSQL(object):
                 SELECT ti.[{0}] as 'Inflacion',  t.[{0}] as 'PIB', p.id as 'Codigo pais', '1' as 'Periodicidad', '1' as Dimension, '{1}' as 'Anio'  
                 FROM temporal t, temporal_inflacion ti, pais p 
                 WHERE t.country_name = ti.country_name AND ti.country_name = p.nombre;"""
+
             for x in range(23):
                 if x == 0:
                     cursor.execute(REPORTE.format('1990', '1'))
@@ -151,11 +163,12 @@ class StatementsSQL(object):
                     anio_codigo = x + 1
                     cursor.execute(REPORTE.format(str(anio), str(anio_codigo)))
                     conn.commit()
-            #cursor.execute(CLEAN_MODEL)
-            #conn.commit()
+            # cursor.executemany(FILL_REPORTE)
+            conn.commit()
         except Exception as e:
             conn.close()
             raise e from Exception
+
     def execute_query(self,query):
         try:
             cursor = conn.cursor()

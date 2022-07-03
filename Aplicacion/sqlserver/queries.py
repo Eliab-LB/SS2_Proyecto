@@ -7,7 +7,10 @@ DROP_TABLES=('DROP TABLE IF EXISTS temporal;'
 'DROP TABLE IF EXISTS fecha;'
 'DROP TABLE IF EXISTS region;'
 'DROP TABLE IF EXISTS periodicidad;'
-'DROP TABLE IF EXISTS sub_region;')
+'DROP TABLE IF EXISTS sub_region;'
+'DROP VIEW IF EXISTS inflacion;'
+'DROP VIEW IF EXISTS crecimiento_mundial;'
+'DROP VIEW IF EXISTS combinado;')
 
 TEMPORAL_CREATION=(
     'CREATE TABLE temporalISO3166('
@@ -109,6 +112,15 @@ CREATE_MODEL=(
     '[id_dimension] INT FOREIGN KEY REFERENCES dimension(id),'
     '[id_fecha] INT FOREIGN KEY REFERENCES fecha(id),'
     ') ;'
+    'CREATE TABLE reporte2 ( '
+    '[id] INT NOT NULL IDENTITY(1,1) PRIMARY KEY,'
+    '[inflacion] FLOAT NOT NULL,'
+    '[PIB] FLOAT NOT NULL,'
+    '[id_pais] INT FOREIGN KEY REFERENCES pais(id),'
+    '[id_periodicidad] INT FOREIGN KEY REFERENCES periodicidad(id),'
+    '[id_dimension] INT FOREIGN KEY REFERENCES dimension(id),'
+    '[id_fecha] INT FOREIGN KEY REFERENCES fecha(id),'
+    ') ;'
 )
 FILL_MODEL=(
     'INSERT INTO region(id, nombre)'
@@ -144,7 +156,8 @@ PAIS=('INSERT INTO pais '
 'WHERE ti.region_code = r.id AND sr.id = ti.sub_region_code ORDER BY ti.country_name ASC; ')
 
 
-CLEAN_MODEL=('delete FROM region; '
+CLEAN_MODEL=('delete from reporte;'
+'delete FROM region; '
 'delete from sub_region; '
 'delete from fecha; '
 'delete from dimension; '
@@ -203,3 +216,69 @@ TOP5_ANIOS_PIB=('SELECT TOP 5 f.anio as \'Año\', AVG(r.PIB) as Promedio_PIB '
 'FROM reporte r, fecha f '
 'WHERE r.id_fecha = f.id '
 'GROUP BY f.anio ORDER BY Promedio_PIB DESC')
+
+TOP5_ANIOS_INFLACION=('SELECT TOP 5 f.anio as \'Año\', AVG(r.Inflacion) as Promedio_Inflacion '
+'FROM reporte r, fecha f '
+'WHERE r.id_fecha = f.id '
+'GROUP BY f.anio ORDER BY Promedio_Inflacion DESC')
+
+
+
+GUATE_COVID=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=320')
+
+SALVADOR_BITCOIN=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=222')
+
+CUBA=('select f.anio,r.PIB,r.Inflacion '
+'from reporte r '
+ 'inner join pais p on p.id = r.id_pais '
+ 'inner join fecha f on r.id_fecha = f.id and f.anio in (2019,2020,2021) '
+'where r.id_pais=192')
+
+FILL_REPORTE=('insert into reporte2 '
+'select inf.inflacion,pib.pib,p.id, \'1\',\'1\',f.id '
+'from (select pib,anio,country_name,country_code from temporal t '
+'unpivot( '
+'pib for anio in ([1990],[2000],[2001],[2002],[2003],[2004],[2005],[2006],[2007],[2008],[2009],[2010],[2011],[2012],[2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021]) '
+') unpiv_pib) pib inner join '
+'(select inflacion,anio,country_name,country_code from temporal_inflacion ti '
+'unpivot( '
+'inflacion for anio in ([1990],[2000],[2001],[2002],[2003],[2004],[2005],[2006],[2007],[2008],[2009],[2010],[2011],[2012],[2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021]) '
+') unpiv_inf) inf '
+'on pib.anio=inf.anio and pib.country_code = inf.country_code '
+'inner join pais p on p.nombre=pib.country_name '
+'inner join fecha f on pib.anio =f.anio  and inf.anio=f.anio ')
+
+DATAMART_PIB=('CREATE VIEW crecimiento_mundial '
+'AS '
+'select p.nombre as \'pais\', r.PIB, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+'from reporte r '
+ 'inner join pais p on r.id_pais = p.id '
+ 'inner join periodicidad p2 on r.id_periodicidad = p2.id '
+ 'inner join dimension d on r.id_dimension = d.id '
+ 'inner join fecha f ON r.id_fecha = f.id ')
+
+DATAMART_INFLACION=('CREATE VIEW inflacion '
+'AS '
+'select p.nombre as \'pais\', r.inflacion , p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+'from reporte r '
+ 'inner join pais p on r.id_pais = p.id '
+ 'inner join periodicidad p2 on r.id_periodicidad = p2.id '
+ 'inner join dimension d on r.id_dimension = d.id '
+ 'inner join fecha f ON r.id_fecha = f.id ')
+
+DATAMART_COMBINADO=(' CREATE VIEW combinado '
+ 'AS '
+ 'select p.nombre as \'pais\', r.PIB, r.inflacion, p2.descripcion as \'periodicidad\', d.descripcion as \'dimension\', f.anio  '
+ 'from reporte r '
+ 'inner join pais p on r.id_pais = p.id '
+ 'inner join periodicidad p2 on r.id_periodicidad = p2.id '
+ 'inner join dimension d on r.id_dimension = d.id '
+ 'inner join fecha f ON r.id_fecha = f.id ')

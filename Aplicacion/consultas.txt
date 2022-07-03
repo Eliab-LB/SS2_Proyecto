@@ -301,15 +301,48 @@ Rwanda             3.96917
 
 Top 5 Años con mas PIB 
 
-Pais          Promedio PIB
-----------  --------------
-Myanmar            7.999
-China              7.48396
-Armenia            5.59886
-Nauru              4.50066
-Bangladesh         4.38532
-Georgia            4.26796
-India              4.15728
-Mongolia           4.12351
-Guyana             4.01001
-Rwanda             3.96917
+  Pais    Promedio PIB
+------  --------------
+  2004         4.15429
+  2006         3.89926
+  2007         3.54286
+  2011         3.47954
+  2005         3.09348
+
+Top 5 Años con mas Inflacion 
+
+  Pais    Promedio Inflacion
+------  --------------------
+  1990              96.3802
+  2000              14.385
+  2006              11.1467
+  2008               9.49125
+  2002               9.34408
+
+PIB e Inflacion de Guatemala durante el covid 
+
++-------+---------+-------------+
+|   Año |     PIB |   Inflación |
++=======+=========+=============+
+|  2019 |  2.2587 |      3.6806 |
++-------+---------+-------------+
+|  2020 | -3.0049 |      2.6452 |
++-------+---------+-------------+
+|  2021 |  0      |      0      |
++-------+---------+-------------+
+
+PIB e Inflacion de El Salvador durante el covid e implementacion del bitcoin 
+
+  Año      PIB    Inflación
+-----  -------  -----------
+ 2019   1.8621       0.9603
+ 2020  -9.0415       0.2039
+ 2021   0            0
+
+PIB e Inflacion de Cuba durante el covid 
+
+  Año       PIB    Inflación
+-----  --------  -----------
+ 2019   -0.1238       3.547
+ 2020  -10.8943      16.5548
+ 2021    0            0
