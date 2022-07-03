@@ -115,6 +115,15 @@ class StatementsSQL(object):
         # finally:
             # conn.close()
 
+    def fill_reporte(self):
+        try:
+            cursor = conn.cursor()
+            cursor.execute(FILL_REPORTE)
+            conn.commit()
+        except Exception as e:
+            conn.close()
+            raise e from Exception
+
     def fill_model_pais(self):
         try:
             cursor = conn.cursor()
